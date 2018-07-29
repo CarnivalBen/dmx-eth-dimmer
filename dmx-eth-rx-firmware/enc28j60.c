@@ -1,13 +1,14 @@
 #pragma warning disable 373
 #pragma warning disable 359
 #pragma warning disable 751
+#pragma warning disable 520
 
 #include <xc.h>
 #include "enc28j60.h"
 
 volatile byte enc28j60bank;
-volatile ipaddr localip;
-volatile macaddr localmac;
+ipaddr localip;
+macaddr localmac;
 volatile byte duplexmode;
 volatile word rxpacketptr;
 volatile word txStart;
@@ -393,7 +394,7 @@ void initENC28J60(byte fullDuplex, word txBuffer, word rxBuffer, macaddr* macAdd
     _delay(50000);
     
     
-    while (!readReg(ESTAT) & ESTAT_CLKRDY);   
+    while ((!readReg(ESTAT)) & ESTAT_CLKRDY);   
        
     writeRegPair(ERXST, rxStart);
     writeRegPair(ERXND, rxEnd);
@@ -442,7 +443,7 @@ void txPacket(byte length) {
     //RB5 = 0;
 }
 
-void packetReceive(void (*callback)()) {    
+void packetReceive(word (*callback)(packetinfo* packet)) {    
     
     word thispacket = rxpacketptr;
     readBufferStart(thispacket);
@@ -461,13 +462,13 @@ void packetReceive(void (*callback)()) {
     
     rxstatusvector rxsv;
     rxsv.rxByteCount = readBufferLEWord();
-    readBuffer(&rxsv + 2, 2);
+    readBuffer(((byte*)&rxsv + 2), 2);
     
     eth2info eth2;
     eth2.flags = rxsv.broadcast;
     
     bufferSkip(6);    
-    readBuffer(&eth2.remotemac, 6);
+    readBuffer(((byte*)&eth2.remotemac), 6);
     
     word packetType = readBufferWord();
     readBufferEnd();               
@@ -497,17 +498,17 @@ void processArp(word bufferAddress) {
     ipaddr targetip;
     
     readBufferStart(bufferAddress + 6);
-    word opcode = readBufferWord();
+    opcode = readBufferWord();
     
     if (opcode != 0x0001) {
         readBufferEnd();
         return;
     }
     
-    readBuffer(&sendermac, 6);
-    readBuffer(&senderip, 4);
-    readBuffer(&targetmac, 6);
-    readBuffer(&targetip, 4);
+    readBuffer(((byte*)&sendermac), 6);
+    readBuffer(((byte*)&senderip), 4);
+    readBuffer(((byte*)&targetmac), 6);
+    readBuffer(((byte*)&targetip), 4);
     readBufferEnd();
     
     if (targetip.b1 != localip.b1 
@@ -517,18 +518,18 @@ void processArp(word bufferAddress) {
     
     writeBufferStart(txStart);
     writeBufferByte(0);
-    writeBuffer(&sendermac, 6);    
-    writeBuffer(&localmac, 6);
+    writeBuffer(((byte*)&sendermac), 6);    
+    writeBuffer(((byte*)&localmac), 6);
     writeBufferWord(PACKETTYPE_ARP);
     writeBufferWord(0x0001);
     writeBufferWord(0x0800);
     writeBufferByte(0x06);
     writeBufferByte(0x04);
     writeBufferWord(0x0002);
-    writeBuffer(&localmac, 6);
-    writeBuffer(&localip, 4);
-    writeBuffer(&sendermac, 6);
-    writeBuffer(&senderip, 4);
+    writeBuffer(((byte*)&localmac), 6);
+    writeBuffer(((byte*)&localip), 4);
+    writeBuffer(((byte*)&sendermac), 6);
+    writeBuffer(((byte*)&senderip), 4);
     writeBufferEnd();
     
     txPacket(42);
@@ -536,7 +537,7 @@ void processArp(word bufferAddress) {
 }
 
 
-void processIP(word bufferAddress, eth2info* eth2 , void (*callback)()) {
+void processIP(word bufferAddress, eth2info* eth2 , word (*callback)(packetinfo* packet)) {
     
     byte version;
     byte headerlength;    
@@ -559,8 +560,8 @@ void processIP(word bufferAddress, eth2info* eth2 , void (*callback)()) {
     ip.ttl = readBufferByte();
     protocol = readBufferByte();
     bufferSkip(2);
-    readBuffer(&ip.remoteip, 4);
-    readBuffer(&ip.targetip, 4);
+    readBuffer(((byte*)&ip.remoteip), 4);
+    readBuffer(((byte*)&ip.targetip), 4);
     readBufferEnd();
     
     if (protocol == IPPROTOCOL_ICMP 
@@ -606,8 +607,8 @@ void processICMP(word bufferAddress, eth2info* eth2, ipinfo* ip) {
     
     writeBufferByte(0);
     
-    writeBuffer(&eth2->remotemac, 6);
-    writeBuffer(&localmac, 6);
+    writeBuffer(((byte*)&eth2->remotemac), 6);
+    writeBuffer(((byte*)&localmac), 6);
     writeBufferWord(PACKETTYPE_IPV4);
     
     writeBufferByte((4 << 4) | (20 / 4));
@@ -618,8 +619,8 @@ void processICMP(word bufferAddress, eth2info* eth2, ipinfo* ip) {
     writeBufferByte(ip->ttl / 2);
     writeBufferByte(IPPROTOCOL_ICMP);
     writeBufferWord(0);
-    writeBuffer(&localip, 4);
-    writeBuffer(&ip->remoteip, 4);
+    writeBuffer(((byte*)&localip), 4);
+    writeBuffer(((byte*)&ip->remoteip), 4);
     
     writeBufferByte(ICMPTYPE_ECHOREPLY);
     writeBufferByte(0);
@@ -667,8 +668,8 @@ void processUDP(word bufferAddress, eth2info* eth2, ipinfo* ip, word (*callback)
     writeBufferByte(0);
     
     // ETH II
-    writeBuffer(&eth2->remotemac, 6);
-    writeBuffer(&localmac, 6);
+    writeBuffer(((byte*)&eth2->remotemac), 6);
+    writeBuffer(((byte*)&localmac), 6);
     writeBufferWord(PACKETTYPE_IPV4);
     
     // IPv4
@@ -680,8 +681,8 @@ void processUDP(word bufferAddress, eth2info* eth2, ipinfo* ip, word (*callback)
     writeBufferByte(128);
     writeBufferByte(IPPROTOCOL_UDP);
     writeBufferWord(0);
-    writeBuffer(&localip, 4);
-    writeBuffer(&ip->remoteip, 4);
+    writeBuffer(((byte*)&localip), 4);
+    writeBuffer(((byte*)&ip->remoteip), 4);
        
     writeBufferEnd();
     

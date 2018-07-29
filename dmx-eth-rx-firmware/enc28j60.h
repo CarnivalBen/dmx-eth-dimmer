@@ -73,7 +73,7 @@ typedef struct {
     udpinfo* udp;
 } packetinfo;
 
-void initSPI();
+void initSPI(void);
 void setBank (byte address);
 void setBits(byte address, byte mask);
 void clrBits(byte address, byte mask);
@@ -83,11 +83,11 @@ byte readReg(byte address);
 word readRegPair(byte address);
 void writePhyReg(byte address, word data);
 word readPhyReg(byte address);
-void reset();
+void reset(void);
 void readBufferStart(word address);
-byte readBufferByte();
-word readBufferWord();
-word readBufferLEWord();
+byte readBufferByte(void);
+word readBufferWord(void);
+word readBufferLEWord(void);
 void readBuffer(byte* address, byte bytes);
 void writeBufferStart(word address);
 void writeBufferByte(byte data);
@@ -98,9 +98,9 @@ void bufferSkip(byte bytes);
 void copy(word from, word to, byte bytes);
 word checksum(word from, byte bytes);
 void initENC28J60(byte fullDuplex, word txBuffer, word rxBuffer, macaddr* macAddr, ipaddr* ipAddr);
-void packetReceive(void (*callback)());
+void packetReceive(word (*callback)(packetinfo* packet));
 void processArp(word bufferAddress);
-void processIP(word bufferAddress, eth2info* eth2 , void (*callback)());
+void processIP(word bufferAddress, eth2info* eth2, word (*callback)(packetinfo* packet));
 void processICMP(word bufferAddress, eth2info* eth2, ipinfo* ip);
 void processUDP(word bufferAddress, eth2info* eth2, ipinfo* ip, word (*callback)(packetinfo* packet));
 #define bufferEnd() RC7 = 1

@@ -1540,4 +1540,24 @@ NoConn ~ 1000 3450
 Wire Wire Line
 	1600 2050 1600 1950
 NoConn ~ 1500 1850
+$Comp
+L R R30
+U 1 1 5B40330D
+P 3750 2150
+F 0 "R30" V 3830 2150 50  0000 C CNN
+F 1 "10K" V 3750 2150 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 3680 2150 50  0001 C CNN
+F 3 "" H 3750 2150 50  0001 C CNN
+	1    3750 2150
+	-1   0    0    1   
+$EndComp
+Text GLabel 3600 1950 0    60   Input ~ 0
+5V
+Wire Wire Line
+	3600 1950 3750 1950
+Wire Wire Line
+	3750 1950 3750 2000
+Wire Wire Line
+	3750 2300 3750 2350
+Connection ~ 3750 2350
 $EndSCHEMATC
