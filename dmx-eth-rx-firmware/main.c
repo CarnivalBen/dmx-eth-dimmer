@@ -198,7 +198,7 @@ int main(void) {
                 dmxupdate = 0x0300;
             }
             
-        } else {
+        } else { // PROGRAMMING MODE REQUESTED
             TRISD = 0xFF;
             TRISEbits.TRISE0 = 0;
             RE0 = 0;
