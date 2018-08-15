@@ -160,49 +160,6 @@ F 3 "" H 2050 4250 50  0001 C CNN
 $EndComp
 Text GLabel 3000 3900 0    60   Input ~ 0
 GND
-$Comp
-L Conn_02x05_Counter_Clockwise J3
-U 1 1 5B1E6B11
-P 1550 6000
-F 0 "J3" H 1600 6300 50  0000 C CNN
-F 1 "MINI ENC28J60" H 1600 5700 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x05_Pitch2.54mm" H 1550 6000 50  0001 C CNN
-F 3 "" H 1550 6000 50  0001 C CNN
-	1    1550 6000
-	1    0    0    -1  
-$EndComp
-$Comp
-L Conn_02x06_Counter_Clockwise J2
-U 1 1 5B1E6B60
-P 1550 4900
-F 0 "J2" H 1600 5200 50  0000 C CNN
-F 1 "STANDARD ENC28J60" H 1600 4500 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x06_Pitch2.54mm" H 1550 4900 50  0001 C CNN
-F 3 "" H 1550 4900 50  0001 C CNN
-	1    1550 4900
-	1    0    0    -1  
-$EndComp
-$Comp
-L L78L33_TO92 U2
-U 1 1 5B1E721A
-P 2450 6200
-F 0 "U2" H 2300 6325 50  0000 C CNN
-F 1 "3.3v Regulator" H 2450 6325 50  0000 L CNN
-F 2 "TO_SOT_Packages_THT:TO-220-3_Vertical" H 2450 6425 50  0001 C CIN
-F 3 "" H 2450 6150 50  0001 C CNN
-	1    2450 6200
-	0    -1   -1   0   
-$EndComp
-Text GLabel 1250 4700 0    60   Input ~ 0
-5V
-Text GLabel 2300 6550 0    60   Input ~ 0
-5V
-Text GLabel 1950 4700 2    60   Input ~ 0
-GND
-Text GLabel 2550 5800 2    60   Input ~ 0
-GND
-Text GLabel 2850 6200 2    60   Input ~ 0
-GND
 Text GLabel 3400 6700 0    60   Input ~ 0
 GND
 Text GLabel 5100 6100 2    60   Input ~ 0
@@ -215,12 +172,10 @@ Text Label 2550 4900 0    60   ~ 0
 TX
 Text Label 2650 5100 0    60   ~ 0
 CS
-Text Label 2650 5450 0    60   ~ 0
+Text Label 2750 6350 0    60   ~ 0
 RX
-Text Label 2650 5550 0    60   ~ 0
+Text Label 2750 6150 0    60   ~ 0
 INT
-NoConn ~ 1850 4800
-NoConn ~ 1350 5200
 Text GLabel 6150 2500 1    60   Input ~ 0
 GND
 $Comp
@@ -258,17 +213,6 @@ F 1 "IP2" H 1250 2090 50  0000 C CNN
 F 2 "CarnivalBen:SW_PUSH_6mm_4pin" H 1250 2350 50  0001 C CNN
 F 3 "" H 1250 2350 50  0001 C CNN
 	1    1250 2150
-	1    0    0    -1  
-$EndComp
-$Comp
-L SW_Push_4PIN SW3
-U 1 1 5B1EF7C8
-P 1250 2450
-F 0 "SW3" H 1300 2550 50  0000 L CNN
-F 1 "IP3" H 1250 2390 50  0000 C CNN
-F 2 "CarnivalBen:SW_PUSH_6mm_4pin" H 1250 2650 50  0001 C CNN
-F 3 "" H 1250 2650 50  0001 C CNN
-	1    1250 2450
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -823,11 +767,6 @@ F 3 "" H 4900 950 50  0001 C CNN
 	1    4900 950 
 	0    1    1    0   
 $EndComp
-Text GLabel 1250 4800 0    60   Input ~ 0
-GND
-NoConn ~ 1350 5000
-NoConn ~ 1350 5800
-NoConn ~ 1350 6000
 $Comp
 L 74HCT08 U3
 U 1 1 5B16BA95
@@ -891,9 +830,6 @@ Text Label 5350 4550 0    60   ~ 0
 CH8
 Entry Wire Line
 	5600 4550 5700 4650
-NoConn ~ 1500 3050
-NoConn ~ 1500 2150
-NoConn ~ 1000 1950
 Wire Wire Line
 	1800 1150 1800 1200
 Wire Wire Line
@@ -940,31 +876,17 @@ Wire Wire Line
 Wire Wire Line
 	2200 4250 3200 4250
 Wire Wire Line
-	2750 6200 2850 6200
-Wire Wire Line
-	1850 4700 1950 4700
-Wire Wire Line
-	1350 4700 1250 4700
-Wire Wire Line
 	3200 4700 2400 4700
 Wire Wire Line
 	2400 4700 2400 5400
-Wire Wire Line
-	900  5450 3250 5450
 Wire Wire Line
 	3200 4900 2500 4900
 Wire Wire Line
 	2500 4900 2500 5500
 Wire Wire Line
-	2500 5500 950  5500
-Wire Wire Line
-	850  5550 3300 5550
-Wire Wire Line
 	2550 5100 3200 5100
 Wire Wire Line
 	3200 4600 2350 4600
-Wire Wire Line
-	2350 4600 2350 5350
 Wire Wire Line
 	3500 6100 3450 6100
 Wire Wire Line
@@ -986,14 +908,8 @@ Wire Wire Line
 Wire Wire Line
 	3150 5350 3350 5350
 Wire Wire Line
-	3300 5550 3300 6150
-Wire Wire Line
-	3250 5450 3250 6450
-Wire Wire Line
-	3250 6450 3450 6450
+	3050 6450 3450 6450
 Connection ~ 3450 6450
-Wire Wire Line
-	3300 6150 3450 6150
 Wire Wire Line
 	3450 6100 3450 6200
 Connection ~ 3450 6150
@@ -1378,67 +1294,7 @@ Wire Wire Line
 Wire Wire Line
 	4700 950  4700 1050
 Wire Wire Line
-	1250 4800 1350 4800
-Wire Wire Line
-	850  4900 850  5900
-Wire Wire Line
-	850  4900 1350 4900
-Wire Wire Line
-	900  5100 900  6100
-Wire Wire Line
-	900  5100 1350 5100
-Wire Wire Line
-	2000 5500 2000 5100
-Wire Wire Line
-	2000 5100 1850 5100
-Wire Wire Line
-	1850 5200 2050 5200
-Wire Wire Line
-	2050 5200 2050 6200
-Connection ~ 2050 5400
-Wire Wire Line
-	1850 5000 2100 5000
-Wire Wire Line
-	2100 5000 2100 6000
-Connection ~ 2100 5350
-Wire Wire Line
 	2550 5100 2550 5600
-Wire Wire Line
-	2550 5600 2150 5600
-Wire Wire Line
-	2150 4900 2150 6100
-Wire Wire Line
-	2150 4900 1850 4900
-Wire Wire Line
-	1850 5800 2550 5800
-Wire Wire Line
-	850  5900 1350 5900
-Connection ~ 850  5550
-Wire Wire Line
-	900  6100 1350 6100
-Connection ~ 900  5450
-Wire Wire Line
-	1350 6200 950  6200
-Wire Wire Line
-	950  6200 950  5500
-Connection ~ 2000 5500
-Wire Wire Line
-	2050 6200 1850 6200
-Wire Wire Line
-	2400 5400 2050 5400
-Wire Wire Line
-	2150 6100 1850 6100
-Connection ~ 2150 5600
-Wire Wire Line
-	2100 6000 1850 6000
-Wire Wire Line
-	2350 5350 2100 5350
-Wire Wire Line
-	2450 6500 2450 6550
-Wire Wire Line
-	2450 6550 2300 6550
-Wire Wire Line
-	1850 5900 2450 5900
 Wire Wire Line
 	5000 6700 5100 6700
 Wire Wire Line
@@ -1503,43 +1359,25 @@ Wire Wire Line
 Wire Wire Line
 	1800 2050 1600 2050
 Wire Wire Line
-	1550 2200 1550 2250
+	1550 2150 1550 2250
 Wire Wire Line
 	1650 2900 1650 2450
 Wire Wire Line
 	1650 2450 1500 2450
 Wire Wire Line
-	2350 2250 2350 2550
-Wire Wire Line
-	2350 2550 1500 2550
-Wire Wire Line
 	1600 3000 1600 2750
 Wire Wire Line
 	1600 2750 1500 2750
 Wire Wire Line
-	2550 2250 2550 2850
+	1550 3050 1550 3150
 Wire Wire Line
-	2550 2850 1500 2850
-Wire Wire Line
-	1550 3100 1550 3150
-Wire Wire Line
-	1750 3200 1750 3350
+	1750 3200 1750 3450
 Wire Wire Line
 	1750 3350 1500 3350
 Wire Wire Line
-	2950 2250 2950 3300
+	900  1850 900  3450
 Wire Wire Line
-	2950 3300 1850 3300
-Wire Wire Line
-	1850 3300 1850 3450
-Wire Wire Line
-	1850 3450 1500 3450
-Wire Wire Line
-	900  1850 900  3350
-NoConn ~ 1000 3450
-Wire Wire Line
-	1600 2050 1600 1950
-NoConn ~ 1500 1850
+	1600 2050 1600 1850
 $Comp
 L R R30
 U 1 1 5B40330D
@@ -1560,4 +1398,106 @@ Wire Wire Line
 Wire Wire Line
 	3750 2300 3750 2350
 Connection ~ 3750 2350
+Wire Wire Line
+	1000 1950 900  1950
+Connection ~ 900  1950
+Wire Wire Line
+	900  3450 1000 3450
+Connection ~ 900  3350
+Wire Wire Line
+	1500 3050 1550 3050
+Connection ~ 1550 3100
+Wire Wire Line
+	1500 2150 1550 2150
+Connection ~ 1550 2200
+Wire Wire Line
+	1600 1850 1500 1850
+Connection ~ 1600 1950
+$Comp
+L SW_Push_4PIN SW3
+U 1 1 5B1EF7C8
+P 1250 2450
+F 0 "SW3" H 1300 2550 50  0000 L CNN
+F 1 "IP3" H 1250 2390 50  0000 C CNN
+F 2 "CarnivalBen:SW_PUSH_6mm_4pin" H 1250 2650 50  0001 C CNN
+F 3 "" H 1250 2650 50  0001 C CNN
+	1    1250 2450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1500 2550 1650 2550
+Connection ~ 1650 2550
+Wire Wire Line
+	2350 2250 2350 2900
+Connection ~ 2350 2900
+Wire Wire Line
+	1500 2850 1600 2850
+Connection ~ 1600 2850
+Wire Wire Line
+	2550 2250 2550 3000
+Connection ~ 2550 3000
+Wire Wire Line
+	1750 3450 1500 3450
+Connection ~ 1750 3350
+Wire Wire Line
+	2950 2250 2950 3200
+Connection ~ 2950 3200
+$Comp
+L Conn_02x06_Counter_Clockwise J3
+U 1 1 5B643410
+P 2050 6050
+F 0 "J3" H 2100 6350 50  0000 C CNN
+F 1 "STANDARD ENC28J60" H 2100 5650 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x06_Pitch2.54mm" H 2050 6050 50  0001 C CNN
+F 3 "" H 2050 6050 50  0001 C CNN
+	1    2050 6050
+	1    0    0    -1  
+$EndComp
+Text GLabel 2450 5950 2    60   Input ~ 0
+5V
+Text GLabel 1750 5950 0    60   Input ~ 0
+GND
+Text GLabel 2450 5850 2    60   Input ~ 0
+GND
+NoConn ~ 1850 5850
+NoConn ~ 2350 6250
+Wire Wire Line
+	2550 5600 1400 5600
+Wire Wire Line
+	1400 5600 1400 6150
+Wire Wire Line
+	1400 6150 1850 6150
+Wire Wire Line
+	1850 5950 1750 5950
+Wire Wire Line
+	2350 5950 2450 5950
+Wire Wire Line
+	2450 5850 2350 5850
+Wire Wire Line
+	2500 5500 1350 5500
+Wire Wire Line
+	1350 5500 1350 6350
+Wire Wire Line
+	1350 6350 1850 6350
+Wire Wire Line
+	2400 5400 1300 5400
+Wire Wire Line
+	1300 5400 1300 6250
+Wire Wire Line
+	1300 6250 1850 6250
+Wire Wire Line
+	2350 4600 2350 5650
+Wire Wire Line
+	2350 5650 1250 5650
+Wire Wire Line
+	1250 5650 1250 6050
+Wire Wire Line
+	1250 6050 1850 6050
+Wire Wire Line
+	3050 6450 3050 6350
+Wire Wire Line
+	3050 6350 2350 6350
+Wire Wire Line
+	3450 6150 2350 6150
+NoConn ~ 2350 6050
 $EndSCHEMATC
