@@ -352,6 +352,7 @@ word checksum(word from, byte bytes) {
         
         bytes--;
         bytes--;
+        CLRWDT();
     }
          
     if (bytes == 1) {        
@@ -389,9 +390,9 @@ void initENC28J60(byte fullDuplex, word txBuffer, word rxBuffer, macaddr* macAdd
     }
     
     RC2 = 0; // ENC28J60 Hardware Reset
-    _delay(50000);
+    _delaywdt(50000);
     RC2 = 1;
-    _delay(50000);
+    _delaywdt(50000);
     
     
     while ((!readReg(ESTAT)) & ESTAT_CLKRDY);   
@@ -422,7 +423,7 @@ void initENC28J60(byte fullDuplex, word txBuffer, word rxBuffer, macaddr* macAdd
     writeReg(ECON2, ECON2_AUTOINC);
     writeReg(EIE, EIE_INTIE | EIE_PKTIE);
     setBits(ECON1, ECON1_TXRST | ECON1_RXRST);
-    _delay(5000);
+    _delaywdt(5000);
     clrBits(ECON1, ECON1_TXRST | ECON1_RXRST);
     writeReg(ECON1, ECON1_RXEN);   
     

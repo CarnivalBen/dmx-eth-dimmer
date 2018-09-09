@@ -5,7 +5,7 @@
 
 // CONFIG1
 #pragma config FOSC = INTOSC    //  (INTOSC oscillator; I/O function on CLKIN pin)
-#pragma config WDTE = OFF       // Watchdog Timer Enable (WDT disabled)
+#pragma config WDTE = ON       // Watchdog Timer Enable (WDT disabled)
 #pragma config PWRTE = OFF      // Power-up Timer Enable (PWRT disabled)
 #pragma config MCLRE = OFF       // MCLR Pin Function Select (MCLR/VPP pin function is MCLR)
 #pragma config CP = OFF         // Flash Program Memory Code Protection (Program memory code protection is disabled)
@@ -39,24 +39,24 @@ word zctmr;
 void alert() {
 
     RA1 = 1;
-    _delay(1000000);
+    _delaywdt(1000000);
     RA1 = 0;
-    _delay(1000000);
+    _delaywdt(1000000);
     
     RA1 = 1;
-    _delay(3000000);
+    _delaywdt(3000000);
     RA1 = 0;
-    _delay(1000000);
+    _delaywdt(1000000);
     
     RA1 = 1;
-    _delay(1000000);
+    _delaywdt(1000000);
     RA1 = 0;
-    _delay(1000000);
+    _delaywdt(1000000);
     
     RA1 = 1;
-    _delay(3000000);
+    _delaywdt(3000000);
     RA1 = 0;
-    _delay(1000000);
+    _delaywdt(1000000);
     
     
 }
@@ -100,7 +100,7 @@ void __interrupt() isr(void) {
         // ZERO CROSSING TRIGGER
         else if (IOCAFbits.IOCAF4 && !RA4) {
             
-            _delay(30);
+            _delaywdt(30);
             iocclear = 0b11101111;  
             if (!RA4) {
 
@@ -119,6 +119,8 @@ void __interrupt() isr(void) {
 }
 
 void main(void) {
+    
+    CLRWDT();
     
     // Configure Oscillator
     OSCCON = 0b01111010;
@@ -162,7 +164,7 @@ void main(void) {
     
     INTCONbits.GIE = 1;
     
-    _delay(10000);
+    _delaywdt(10000);
     
     dmx = 128;
     
@@ -171,5 +173,6 @@ void main(void) {
         word mark = (word)(zctmr - (((unsigned long)zctmr * dmx) >> 8));
         if (TMR1 >= mark) RA1 = 1;
 
+        CLRWDT();
     }
 }

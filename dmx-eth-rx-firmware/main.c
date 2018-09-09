@@ -5,7 +5,7 @@
 
 // CONFIG
 #pragma config FOSC = HS        // Oscillator Selection bits (HS oscillator)
-#pragma config WDTE = OFF       // Watchdog Timer Enable bit (WDT disabled)
+#pragma config WDTE = ON       // Watchdog Timer Enable bit (WDT disabled)
 #pragma config PWRTE = ON      // Power-up Timer Enable bit (PWRT enabled)
 #pragma config BOREN = OFF      // Brown-out Reset Enable bit (BOR disabled)
 #pragma config LVP = OFF        // Low-Voltage (Single-Supply) In-Circuit Serial Programming Enable bit (RB3 is digital I/O, HV on MCLR must be used for programming)
@@ -107,10 +107,12 @@ int main(void) {
     PORTE = 0;   
     
     OPTION_REGbits.nRBPU = 0;
+    OPTION_REGbits.PSA = 1;
+    OPTION_REGbits.PS = 0b111;
         
     // Read IP + MAC from eeprom
     ip.b1 = readEEPROM(0x00);
-    
+    CLRWDT();
     if (ip.b1 == 0 || ip.b1 == 0xFF) {
         const char ipa[4] = DEFAULT_IP;
         ip.b1 = ipa[0];
@@ -133,6 +135,7 @@ int main(void) {
         dmxchannel = DEFAULT_DMXCHANNEL;
         writeEEPROM(0x04, dmxchannel >> 8);
         writeEEPROM(0x05, dmxchannel & 0xFF);
+        CLRWDT();
     }
     
     const char mca[6] = MAC_ADDRESS;
@@ -144,7 +147,9 @@ int main(void) {
     mac.b6 = ip.b4;  
     
     initSPI();
+    CLRWDT();
     initENC28J60(0, TXBUFFER_START, RXBUFFER_START, &mac, &ip);
+    CLRWDT();
     
     byte dmxout = 0;
     word dmxupdate = 0xFFFF;
@@ -153,13 +158,14 @@ int main(void) {
     TRISE = 0b00000000;     
     PORTE = 0b00000001;      
     for (byte n = 0; n < 8; n++) {    
-        _delay(1000000);
+        _delaywdt(1000000);
         PORTE = ~PORTE;      
     } 
     TRISE = 0b00000011;
 
     
     while (1) {
+        CLRWDT();
         
         // PROCESS ETHERNET PACKETS
         if (RC6 == 0) {
@@ -182,14 +188,14 @@ int main(void) {
                 RC0 = 0;
                 RC1 = 0;
                 PORTD = 0x01 << dmxout;
-                _delay(200);
+                _delaywdt(200);
                 byte dmxv = dmxmap[dmx[dmxout]];
                 for (byte b = 0x01; b != 0; b = b * 2){
                     RC1 = (dmxv & b) ? 1 : 0;
                     RC0 = 1;
-                    _delay(200);
+                    _delaywdt(200);
                     RC0 = 0;
-                    _delay(186);
+                    _delaywdt(186);
                 }       
                 dmxout++;
                 if (dmxout >= 8) dmxout = 0;
@@ -202,9 +208,9 @@ int main(void) {
             TRISD = 0xFF;
             TRISEbits.TRISE0 = 0;
             RE0 = 0;
-            _delay(1000000);
+            _delaywdt(1000000);
             TRISEbits.TRISE0 = 1;
-            _delay(1000000);
+            _delaywdt(1000000);
         }
         
         // STORE IP ADDRESS/DMX ADDRESS
@@ -212,8 +218,17 @@ int main(void) {
             TRISEbits.TRISE0 = 0;
             RE0 = 0;
             
-            _delay(500);
-            byte newval = ~PORTB;
+            _delaywdt(500);            
+            byte newval = 0;
+            if (RB0 == 0) newval |= 0b10000000;
+            if (RB1 == 0) newval |= 0b01000000;
+            if (RB2 == 0) newval |= 0b00100000;
+            if (RB3 == 0) newval |= 0b00010000;
+            if (RB4 == 0) newval |= 0b00001000;
+            if (RB5 == 0) newval |= 0b00000100;
+            if (RB6 == 0) newval |= 0b00000010;
+            if (RB7 == 0) newval |= 0b00000001;
+                
             if (RA0 == 0) {
                 ip.b1 = newval;
                 writeEEPROM(0x00, newval);
@@ -243,7 +258,7 @@ int main(void) {
             initENC28J60(0, TXBUFFER_START, RXBUFFER_START, &mac, &ip);
            
             for (byte n = 0; n < 8; n++) {
-                _delay(500000);
+                _delaywdt(500000);
                 RE0 = ~RE0;
             }   
             while (PORTA != 0b00111111);
