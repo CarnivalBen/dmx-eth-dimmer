@@ -33,7 +33,7 @@ volatile byte dmxrx;
 volatile byte dmxrxp;
 volatile byte dmx;
 
-word zctmr;
+
 
 
 void alert() {
@@ -92,20 +92,20 @@ void __interrupt() isr(void) {
         
             IOCAPbits.IOCAP2 = 0;
             iocclear = 0b11111110;
-                                
-            dmx = dmxrx;            
+                     
+            dmx = dmxrx;
                      
         }
         
         // ZERO CROSSING TRIGGER
         else if (IOCAFbits.IOCAF4 && !RA4) {
             
-            _delaywdt(30);
+            _delaywdt(10);
             iocclear = 0b11101111;  
             if (!RA4) {
 
                 // STORE TIMER VALUES                
-                zctmr = TMR1;
+                //zctmr = TMR1;
                 TMR1 = 0;
                 RA1 = 0;
                 
@@ -148,7 +148,7 @@ void main(void) {
     IOCAPbits.IOCAP0 = 1; // CHIP SELECT RISE INTERRUPT
     IOCAPbits.IOCAP2 = 1; // CLOCK IN RISE INTERRUPT
     IOCANbits.IOCAN0 = 1; // CHIP SELECT FALL INTERRUPT
-    IOCANbits.IOCAN4 = 1; // ZERO CROSS PULSE
+    //IOCANbits.IOCAN4 = 1; // ZERO CROSS PULSE
     INTCONbits.IOCIE = 1;
    
     
@@ -166,13 +166,29 @@ void main(void) {
     
     _delaywdt(10000);
     
-    dmx = 128;
+    dmx = 0;
     
+    byte zc = 0;
+    word zctmr = 500;
     while(1) {
 
-        word mark = (word)(zctmr - (((unsigned long)zctmr * dmx) >> 8));
-        if (TMR1 >= mark) RA1 = 1;
-
+        if (RA4 && zc == 0) {
+            zc = 1;
+            RA1 = 0;
+            zctmr = TMR1;
+        }
+        
+        if (!RA4 && zc == 1) {
+            zc = 0;
+            //RA1 = 0;
+            TMR1 = 0;
+        }
+        
+        if (dmx > 0) {
+            word mark = (word)(zctmr - (((unsigned long)zctmr * dmx) >> 8));        
+            if (TMR1 >= mark && zc == 0) RA1 = 1;
+        }
+        
         CLRWDT();
     }
 }

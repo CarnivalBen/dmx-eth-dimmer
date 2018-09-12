@@ -22,6 +22,14 @@
 #define MAC_ADDRESS { 0x12, 0x4E, 0x04, 0x0A, 0x00, 0x00}
 #define DEFAULT_DMXCHANNEL 10
 
+#define CFG_RED TRISEbits.TRISE0 = 0; RE0 = 0
+#define CFG_GRN TRISEbits.TRISE0 = 0; RE0 = 1
+#define CFG_OFF TRISEbits.TRISE0 = 1
+#define ETH_RED TRISEbits.TRISE1 = 0; RE1 = 0
+#define ETH_GRN TRISEbits.TRISE1 = 0; RE1 = 1
+#define ETH_OFF TRISEbits.TRISE1 = 1
+
+
 
 // RA0 = IP1 SAVE
 // RA1 = IP2 SAVE
@@ -106,6 +114,17 @@ int main(void) {
     PORTD = 0;
     PORTE = 0;   
     
+    CFG_RED;
+    _delaywdt(1000000);
+    CFG_GRN;
+    _delaywdt(1000000);
+    CFG_OFF;
+    ETH_RED;
+    _delaywdt(1000000);
+    ETH_GRN;
+    _delaywdt(1000000);
+    ETH_OFF;
+    
     OPTION_REGbits.nRBPU = 0;
     OPTION_REGbits.PSA = 1;
     OPTION_REGbits.PS = 0b111;
@@ -161,8 +180,9 @@ int main(void) {
         _delaywdt(1000000);
         PORTE = ~PORTE;      
     } 
-    TRISE = 0b00000011;
+    TRISE = 0b00000001;
 
+    
     
     while (1) {
         CLRWDT();
@@ -170,14 +190,12 @@ int main(void) {
         // PROCESS ETHERNET PACKETS
         if (RC6 == 0) {
             
-            TRISEbits.TRISE1 = 0;
-            RE1 = 1;
             byte intFlags = readReg(EIR);
             
             if (intFlags & EIR_PKTIF) {                
                 packetReceive(&handlePacket);
             }
-            TRISEbits.TRISE1 = 1;
+            RE1 = ~RE1;
         }
         
         // SEND DMX TO NODES
@@ -189,7 +207,8 @@ int main(void) {
                 RC1 = 0;
                 PORTD = 0x01 << dmxout;
                 _delaywdt(200);
-                byte dmxv = dmxmap[dmx[dmxout]];
+                //byte dmxv = dmxmap[dmx[dmxout]];
+                byte dmxv = dmx[dmxout];
                 for (byte b = 0x01; b != 0; b = b * 2){
                     RC1 = (dmxv & b) ? 1 : 0;
                     RC0 = 1;
@@ -201,25 +220,23 @@ int main(void) {
                 if (dmxout >= 8) dmxout = 0;
                 PORTD = 0;
                 RC1 = 0;
-                dmxupdate = 0x0300;
+                dmxupdate = 0x0200;
             }
             
         } else { // PROGRAMMING MODE REQUESTED
             TRISD = 0xFF;
-            TRISEbits.TRISE0 = 0;
-            RE0 = 0;
+            CFG_RED;
             _delaywdt(1000000);
-            TRISEbits.TRISE0 = 1;
+            CFG_OFF;
             _delaywdt(1000000);
         }
         
         // STORE IP ADDRESS/DMX ADDRESS
         if (PORTA != 0b00111111) {
-            TRISEbits.TRISE0 = 0;
-            RE0 = 0;
+            CFG_RED;
             
-            _delaywdt(500);            
-            byte newval = 0;
+            _delaywdt(5000);            
+            byte newval = 0; //~PORTB;
             if (RB0 == 0) newval |= 0b10000000;
             if (RB1 == 0) newval |= 0b01000000;
             if (RB2 == 0) newval |= 0b00100000;
@@ -259,10 +276,12 @@ int main(void) {
            
             for (byte n = 0; n < 8; n++) {
                 _delaywdt(500000);
-                RE0 = ~RE0;
+                CFG_GRN;
+                _delaywdt(500000);
+                CFG_OFF;
             }   
             while (PORTA != 0b00111111);
-            TRISEbits.TRISE0 = 1;
+            
         }
         
     }
@@ -337,3 +356,4 @@ byte readEEPROM(byte address) {
     return EEDATA;
     
 }
+
